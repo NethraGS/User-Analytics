@@ -1,0 +1,55 @@
+<div class="card flex justify-content-center">
+    <p-sidebar #sidebarRef [(visible)]="sidebarVisible" class="custom-sidebar">
+        <ng-template pTemplate="headless">
+            <div class="flex flex-column h-full">
+                <div class="flex align-items-center justify-content-between px-4 pt-3 flex-shrink-0">
+                    <span class="inline-flex align-items-center gap-2">
+                        <img src="assets/logo.png" alt="Streetman Logo" width="33" height="35">
+                        <span class="font-semibold text-2xl text-primary">Streetman</span>
+                    </span>
+                    <span>
+                        <p-button type="button" (click)="closeCallback($event)" icon="pi pi-times" rounded="true" outlined="true" styleClass="h-2rem w-2rem"></p-button>
+                    </span>
+                </div>
+                <div class="overflow-y-auto flex-grow">
+                    <ul class="list-none p-3 m-0">
+                        <li>
+                            <p-button routerLink="/dashboard" routerLinkActive="active-link" label="Dashboard" icon="pi pi-home" class="flex align-items-center w-full"></p-button>
+                        </li>
+                        <li>
+                            <p-button routerLink="/mapview" routerLinkActive="active-link" label="MapView" icon="pi pi-map" class="flex align-items-center w-full"></p-button>
+                        </li>
+                        <li>
+                            <p-button
+                                pRipple
+                                label="Scheduler"
+                                icon="pi pi-chevron-down"
+                                class="flex align-items-center justify-content-between w-full"
+                                (click)="isSchedulerOpen = !isSchedulerOpen"
+                            ></p-button>
+                            <ul *ngIf="isSchedulerOpen" class="list-none pl-3">
+                                <li>
+                                    <p-button routerLink="/scheduler/dimming-profiles" routerLinkActive="active-link" label="Dimming Profiles" icon="pi pi-sliders-h" class="flex align-items-center w-full p-1"></p-button>
+                                </li>
+                                <li>
+                                    <p-button routerLink="/scheduler/dimming-schedules" routerLinkActive="active-link" label="Dimming Schedules" icon="pi pi-calendar" class="flex align-items-center w-full p-1"></p-button>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mt-auto">
+                    <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+                    <a pRipple class="m-3 flex align-items-center cursor-pointer p-3 gap-2 border-round text-700">
+                        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle"></p-avatar>
+                        <span class="font-bold">Amy Elsner</span>
+                    </a>
+                </div>
+            </div>
+        </ng-template>
+    </p-sidebar>
+    <p-button (click)="sidebarVisible = true" icon="pi pi-arrow-right"></p-button>
+</div>
+<div class="layout-content">
+    <router-outlet></router-outlet>
+</div>

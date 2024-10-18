@@ -1,0 +1,74 @@
+<div class="dimming-profiles-container">
+    <div class="profiles-sidebar">
+      <h2>Dimming Profiles</h2>
+      <div class="profile-list">
+        <div class="profile-item">
+          <span>Test</span>
+          <span>No Dimming Calendar Associated</span>
+        </div>
+        <!-- Add more profiles as needed -->
+      </div>
+    </div>
+  
+    <div class="profile-details">
+      <h3>Dimming Profile Details</h3>
+      <div class="form-group">
+        <label for="profileName">Profile Name*</label>
+        <input id="profileName" type="text" pInputText />
+      </div>
+      
+      <div class="form-group">
+        <label for="colorPicker">Color</label>
+        <p-colorPicker [(ngModel)]="color" [style]="{ width: '100%' }"></p-colorPicker>
+      </div>
+      
+      <div class="form-group">
+        <label for="profileType">Profile Type</label>
+        <p-dropdown
+          id="profileType"
+          [options]="profileTypes"
+          [(ngModel)]="selectedProfileType"
+          placeholder="Select a Profile Type"
+          [showClear]="true"
+        ></p-dropdown>
+      </div>
+  
+      <table class="p-datatable">
+        <thead>
+          <tr>
+            <th>Start Time (hh:mm)</th>
+            <th>Lamp Level</th>
+            <th>Motion</th>
+            <th>Photocell</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let time of times">
+            <td>{{ time.startTime }}</td>
+            <td>
+              <p-inputNumber [(ngModel)]="time.lampLevel" [min]="0" [max]="100" [step]="10"></p-inputNumber>
+            </td>
+            <td>
+              <p-checkbox [(ngModel)]="time.motion"></p-checkbox>
+            </td>
+            <td>
+              <p-checkbox [(ngModel)]="time.photocell"></p-checkbox>
+            </td>
+            <td>
+              <p-button icon="pi pi-trash" (click)="removeTime(time)"></p-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <p-button icon="pi pi-plus" (click)="addTime()" label="Add Time"></p-button>
+      <p-button label="Reset" (click)="resetProfile()" class="p-button-secondary"></p-button>
+      <p-button label="Save Profile" (click)="saveProfile()"></p-button>
+  
+      <div class="clock-container">
+        <canvas id="clockCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+  
