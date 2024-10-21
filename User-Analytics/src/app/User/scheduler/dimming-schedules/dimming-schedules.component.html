@@ -1,1 +1,52 @@
-<p>dimming-schedules works!</p>
+<div class="dimming-schedules-container">
+    <h2>Dimming Schedules</h2>
+  
+    <!-- Form to add or edit a schedule -->
+    <div class="new-schedule">
+      <h3>Add New Schedule</h3>
+      <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <p-calendar [(ngModel)]="newSchedule.startDate" showIcon="true"></p-calendar>
+      </div>
+      <div class="form-group">
+        <label for="endDate">End Date</label>
+        <p-calendar [(ngModel)]="newSchedule.endDate" showIcon="true"></p-calendar>
+      </div>
+      <div class="form-group">
+        <label for="frequency">Frequency</label>
+        <p-dropdown
+          id="frequency"
+          [options]="frequencyOptions"
+          [(ngModel)]="newSchedule.frequency"
+          placeholder="Select Frequency"
+          [showClear]="true">
+        </p-dropdown>
+      </div>
+      <p-button label="Add Schedule" (click)="addSchedule()" class="add-button"></p-button>
+    </div>
+  
+    <!-- Table to display existing schedules -->
+    <table class="p-datatable">
+      <thead>
+        <tr>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Frequency</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let schedule of schedules">
+          <td>{{ schedule.startDate | date: 'longDate' }}</td>
+          <td>{{ schedule.endDate | date: 'longDate' }}</td>
+          <td>{{ schedule.frequency }}</td>
+          <td>
+            <p-button icon="pi pi-trash" (click)="removeSchedule(schedule)" class="delete-button"></p-button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <p-button label="Save Schedules" (click)="saveSchedules()" class="save-button"></p-button>
+  </div>
+  
