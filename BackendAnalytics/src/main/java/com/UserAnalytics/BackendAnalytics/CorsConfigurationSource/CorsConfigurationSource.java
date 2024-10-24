@@ -13,7 +13,7 @@ public class CorsConfigurationSource {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:4200"); // Allow the Angular frontend
+        config.addAllowedOriginPattern("*"); // Allow all origins (use addAllowedOrigin("*") for specific patterns)
         config.addAllowedHeader("*"); // Allow all headers
         config.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
 
@@ -23,4 +23,3 @@ public class CorsConfigurationSource {
         return new CorsFilter(source);
     }
 }
-
