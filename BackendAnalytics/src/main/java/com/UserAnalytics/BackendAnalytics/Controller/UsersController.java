@@ -23,21 +23,20 @@ public class UsersController {
             Optional<Users> foundUser = userService.loginUser(user);
 
             if (foundUser.isPresent()) {
-                String role = foundUser.get().getRole().name();
-                String redirectUrl = role.equals("ADMIN") ? "Admin Dashboard" : "User Dashboard";
-                Long userId = foundUser.get().getId();
+                Users loggedInUser = foundUser.get();  // Retrieve the found user object
+                String role = loggedInUser.getRole().name();
+                Long userId = loggedInUser.getId();
 
                 return ResponseEntity.ok().body(Map.of(
                         "message", "Login successful",
                         "role", role,
-                        "userId", userId,
-                        "redirect", redirectUrl
+                        "userId", userId  // Include userId in the response
                 ));
             } else {
                 return ResponseEntity.status(401).body(Map.of("error", "Invalid username or password"));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(401).body(Map.of("error", "Invalid username or password"));
+            return ResponseEntity.status(500).body(Map.of("error", "An error occurred during login"));
         }
     }
 
