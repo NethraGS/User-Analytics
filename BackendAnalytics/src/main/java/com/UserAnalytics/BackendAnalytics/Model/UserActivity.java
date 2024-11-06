@@ -20,22 +20,21 @@ public class UserActivity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user; // The user who generated the activity
+    private Users user;
+    @Column(nullable = false)
+    private String sessionId;
 
     @Column(nullable = false)
-    private String sessionId; // Unique session identifier
+    private String type;
 
     @Column(nullable = false)
-    private String type; // Type of event (e.g., click, page_visit, session_start, etc.)
-
-    @Column(nullable = false)
-    private String page; // The page where the activity occurred
+    private String page;
 
     @Column
-    private Long timeOnPage; // Time spent on the page
+    private Long timeOnPage;
 
     @Column(nullable = false)
-    private Date timestamp; // Timestamp of the event
+    private Date timestamp;
 
-    // Additional fields for custom actions and demographics can be added here
+
 }

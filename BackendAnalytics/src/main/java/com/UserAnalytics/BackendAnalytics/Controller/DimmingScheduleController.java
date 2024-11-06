@@ -1,6 +1,5 @@
 package com.UserAnalytics.BackendAnalytics.Controller;
 
-
 import com.UserAnalytics.BackendAnalytics.Model.DimmingSchedule;
 import com.UserAnalytics.BackendAnalytics.Service.DimmingScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +30,16 @@ public class DimmingScheduleController {
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
         service.deleteSchedule(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Added @PutMapping for updating a schedule
+    @PutMapping("/{id}")
+    public ResponseEntity<DimmingSchedule> updateSchedule(@PathVariable Long id, @RequestBody DimmingSchedule schedule) {
+        DimmingSchedule updatedSchedule = service.updateSchedule(id, schedule);
+        if (updatedSchedule != null) {
+            return ResponseEntity.ok(updatedSchedule); // Return the updated schedule
+        } else {
+            return ResponseEntity.notFound().build(); // If schedule is not found, return 404
+        }
     }
 }
