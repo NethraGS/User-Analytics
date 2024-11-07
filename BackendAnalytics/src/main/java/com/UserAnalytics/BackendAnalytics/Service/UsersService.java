@@ -7,12 +7,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UsersService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    private ConcurrentHashMap<String, Long> activeSessions = new ConcurrentHashMap<>(); // Stores sessionId -> userId
 
     public void registerUser(Users user) {
         System.out.println("Registering user: " + user);
@@ -37,5 +40,15 @@ public class UsersService {
 
     public Optional<Users> getUserByEmail(String email) {
         return usersRepository.findByEmail(email);
+    }
+
+    // Optionally store session IDs on the server
+    public void storeSession(String sessionId, Long userId) {
+        activeSessions.put(sessionId, userId);
+    }
+
+    // Optionally remove a session when the user logs out
+    public void removeSession(String sessionId) {
+        activeSessions.remove(sessionId);
     }
 }

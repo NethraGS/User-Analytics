@@ -5,9 +5,11 @@ import com.UserAnalytics.BackendAnalytics.Service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -18,7 +20,7 @@ public class UsersController {
     private UsersService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Users user) {
+    public ResponseEntity<?> login(@RequestBody Users user, HttpServletResponse response) {
         try {
             Optional<Users> foundUser = userService.loginUser(user);
 
@@ -26,6 +28,20 @@ public class UsersController {
                 Users loggedInUser = foundUser.get();  // Retrieve the found user object
                 String role = loggedInUser.getRole().name();
                 Long userId = loggedInUser.getId();
+
+                // Generate a session ID and set it in a cookie
+                String sessionId = UUID.randomUUID().toString();
+                Cookie sessionCookie = new Cookie("sessionId", sessionId);
+                sessionCookie.setHttpOnly(true);  // Prevent client-side JavaScript access
+                sessionCookie.setSecure(true);    // Send only over HTTPS
+                sessionCookie.setPath("/");      // Cookie accessible across the entire domain
+                sessionCookie.setMaxAge(3600);   // Cookie expiry time (1 hour)
+
+                // Add session cookie to the response
+                response.addCookie(sessionCookie);
+
+                // Optionally, store the session ID on the server (e.g., in a database or cache)
+                // userService.storeSession(sessionId, loggedInUser);
 
                 return ResponseEntity.ok().body(Map.of(
                         "message", "Login successful",
@@ -37,6 +53,21 @@ public class UsersController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", "An error occurred during login"));
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout(HttpServletResponse response) {
+        try {
+            // Invalidate the session by removing the session cookie
+            Cookie sessionCookie = new Cookie("sessionId", null);
+            sessionCookie.setMaxAge(0); // Expire immediately
+            sessionCookie.setPath("/");  // Path to which the cookie applies
+            response.addCookie(sessionCookie); // Send expired cookie to the client
+
+            return ResponseEntity.ok(Map.of("message", "Logout successful"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "An error occurred during logout"));
         }
     }
 
