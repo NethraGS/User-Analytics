@@ -39,9 +39,11 @@ public class StreetlightController {
                                                         @RequestParam Integer brightness,
                                                         @RequestParam String operationalTime,
                                                         @RequestParam String lastMaintenance,
-                                                        @RequestParam List<String> issues) {
-        return streetlightService.createStreetlight(name, type, coordinates, status, powerConsumption, brightness, operationalTime, lastMaintenance, issues);
+                                                        @RequestParam List<String> issues,
+                                                        @RequestParam String location) { // Add location parameter
+        return streetlightService.createStreetlight(name, type, coordinates, status, powerConsumption, brightness, operationalTime, lastMaintenance, issues, location);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Streetlight> updateStreetlight(@PathVariable Long id, @RequestBody Streetlight streetlight) {

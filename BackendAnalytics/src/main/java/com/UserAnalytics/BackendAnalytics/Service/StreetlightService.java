@@ -29,7 +29,8 @@ public class StreetlightService {
     }
 
     // Additional method to create a Streetlight with coordinates as a string
-    public Streetlight createStreetlight(String name, String type, String coordinates, Boolean status, Integer powerConsumption, Integer brightness, String operationalTime, String lastMaintenance, List<String> issues) {
+
+    public Streetlight createStreetlight(String name, String type, String coordinates, Boolean status, Integer powerConsumption, Integer brightness, String operationalTime, String lastMaintenance, List<String> issues, String location) {
         Streetlight streetlight = new Streetlight();
         streetlight.setName(name);
         streetlight.setType(type);
@@ -40,7 +41,9 @@ public class StreetlightService {
         streetlight.setOperationalTime(operationalTime);
         streetlight.setLastMaintenance(lastMaintenance);
         streetlight.setIssues(issues);
+        streetlight.setLocation(location); // Set the location
 
         return streetlightRepository.save(streetlight);
     }
+
 }

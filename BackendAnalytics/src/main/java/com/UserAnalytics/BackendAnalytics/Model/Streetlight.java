@@ -18,7 +18,7 @@ public class Streetlight {
 
     // Coordinates stored as a string (e.g., "latitude,longitude")
     private String coordinates;
-
+    private String location;
     private Boolean status;
     private Integer powerConsumption;
     private Integer brightness;
