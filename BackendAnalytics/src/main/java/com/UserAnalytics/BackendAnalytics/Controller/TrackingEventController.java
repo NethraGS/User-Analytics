@@ -16,7 +16,6 @@ public class TrackingEventController {
     @Autowired
     private TrackingEventService trackingEventService;
 
-    // Endpoint to save tracking event data
     @PostMapping("/track-event")
     public ResponseEntity<String> trackEvent(@RequestBody TrackingEvent event) {
         try {
@@ -27,10 +26,23 @@ public class TrackingEventController {
         }
     }
 
-    // Endpoint to get all tracking events (for debugging or analysis)
     @GetMapping("/events")
     public ResponseEntity<List<TrackingEvent>> getEvents() {
         List<TrackingEvent> events = trackingEventService.getAllEvents();
         return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    // Endpoint for Event Overview
+    @GetMapping("/event-overview")
+    public ResponseEntity<List<Object[]>> getEventOverview() {
+        List<Object[]> eventOverview = trackingEventService.getEventOverview();
+        return new ResponseEntity<>(eventOverview, HttpStatus.OK);
+    }
+
+    // Endpoint for Top Events
+    @GetMapping("/top-events")
+    public ResponseEntity<List<Object[]>> getTopEvents() {
+        List<Object[]> topEvents = trackingEventService.getTopEvents();
+        return new ResponseEntity<>(topEvents, HttpStatus.OK);
     }
 }
