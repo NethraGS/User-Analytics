@@ -4,6 +4,7 @@ import com.UserAnalytics.BackendAnalytics.Dto.PageViewStatsDTO;
 import com.UserAnalytics.BackendAnalytics.Model.PageView;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +16,14 @@ public interface PageViewRepository extends JpaRepository<PageView, Long> {
             "FROM page_view p " +
             "GROUP BY p.url",nativeQuery = true)
     List<Object[]>getPageViewStatistics();
+
+    @Query(value = "SELECT p.url, DATE(p.timestamp) as date, COUNT(p.id) as pageViews " +
+            "FROM page_view p " +
+            "WHERE p.timestamp BETWEEN CAST(:startDate AS TIMESTAMP) AND CAST(:endDate AS TIMESTAMP) " +
+            "GROUP BY p.url, DATE(p.timestamp) " +
+            "ORDER BY date", nativeQuery = true)
+    List<Object[]> getPageViewTrends(@Param("startDate") String startDate, @Param("endDate") String endDate);
+
 
 }
 

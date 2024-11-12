@@ -1,6 +1,7 @@
 package com.UserAnalytics.BackendAnalytics.Service;
 
 import com.UserAnalytics.BackendAnalytics.Dto.PageViewStatsDTO;
+import com.UserAnalytics.BackendAnalytics.Dto.PageViewTrendsDTO;
 import com.UserAnalytics.BackendAnalytics.Model.PageView;
 import com.UserAnalytics.BackendAnalytics.Repository.PageViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,25 +57,38 @@ public class PageViewService {
         return pageViews.stream()
                 .collect(Collectors.groupingBy(PageView::getUserRole, Collectors.counting()));
     }
-
-    public Map<String, Long> getPageViewTrends(String startDate, String endDate) {
+    public List<PageViewTrendsDTO> getPageViewTrends(String startDate, String endDate) {
         // Define date format
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
 
-        // Parse start and end date using the provided formatter
-        LocalDate start = parseDate(startDate, formatter);
-        LocalDate end = parseDate(endDate, formatter);
+        // Parse start and end date
+        LocalDate start = LocalDate.parse(startDate, formatter);
+        LocalDate end = LocalDate.parse(endDate, formatter);
 
-        // Retrieve all PageViews (can be optimized with a query to fetch only within the date range if needed)
+        // Retrieve all PageViews within the specified date range
         List<PageView> pageViews = pageViewRepository.findAll();
 
-        // Filter the page views based on the start and end date, and group by date
-        return pageViews.stream()
+        // Filter and group the page views by URL and date, then map to PageViewTrendsDTO
+        Map<String, Long> groupedData = pageViews.stream()
                 .filter(pageView -> {
                     LocalDate pageViewDate = pageView.getTimestamp().toLocalDate();
                     return !pageViewDate.isBefore(start) && !pageViewDate.isAfter(end);
                 })
-                .collect(Collectors.groupingBy(pageView -> pageView.getTimestamp().toLocalDate().toString(), Collectors.counting()));
+                .collect(Collectors.groupingBy(
+                        pageView -> pageView.getUrl() + "|" + pageView.getTimestamp().toLocalDate().toString(),
+                        Collectors.counting()
+                ));
+
+        // Convert grouped data to List<PageViewTrendsDTO>
+        return groupedData.entrySet().stream()
+                .map(entry -> {
+                    String[] keyParts = entry.getKey().split("\\|");
+                    String url = keyParts[0];
+                    String date = keyParts[1];
+                    Long pageViewsCount = entry.getValue();
+                    return new PageViewTrendsDTO(url, date, pageViewsCount);
+                })
+                .collect(Collectors.toList());
     }
 
 

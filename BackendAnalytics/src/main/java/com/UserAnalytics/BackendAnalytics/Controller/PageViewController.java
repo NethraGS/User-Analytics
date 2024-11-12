@@ -1,9 +1,8 @@
 package com.UserAnalytics.BackendAnalytics.Controller;
 
-import com.UserAnalytics.BackendAnalytics.Dto.PageEventDTO;
 import com.UserAnalytics.BackendAnalytics.Dto.PageViewStatsDTO;
+import com.UserAnalytics.BackendAnalytics.Dto.PageViewTrendsDTO;
 import com.UserAnalytics.BackendAnalytics.Service.PageViewService;
-import com.UserAnalytics.BackendAnalytics.Model.PageView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,10 +67,9 @@ public class PageViewController {
     }
 
     @GetMapping("/page-view-trends")
-    public Map<String, Long> getPageViewTrends(@RequestParam String startDate, @RequestParam String endDate) {
+    public List<PageViewTrendsDTO> getPageViewTrends(@RequestParam String startDate, @RequestParam String endDate) {
         return pageViewService.getPageViewTrends(startDate, endDate);
     }
-
 
     @GetMapping("/top-pages")
     public List<Map.Entry<String, Long>> getTopPagesByViews(@RequestParam String startDate, @RequestParam String endDate) {
