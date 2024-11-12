@@ -53,7 +53,7 @@ public class PageViewService {
     }
 
     public Map<String, Long> getPageViewTrends(String startDate, String endDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
         LocalDate start = parseDate(startDate, formatter);
         LocalDate end = parseDate(endDate, formatter);
 
@@ -64,7 +64,7 @@ public class PageViewService {
     }
 
     public List<Map.Entry<String, Long>> getTopPagesByViews(String startDate, String endDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime start = parseDateTime(startDate, formatter);
         LocalDateTime end = parseDateTime(endDate, formatter);
 
