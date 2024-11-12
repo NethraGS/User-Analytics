@@ -1,5 +1,6 @@
 package com.UserAnalytics.BackendAnalytics.Controller;
 
+import com.UserAnalytics.BackendAnalytics.Dto.PageEventDTO;
 import com.UserAnalytics.BackendAnalytics.Model.TrackingEvent;
 import com.UserAnalytics.BackendAnalytics.Service.TrackingEventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,12 @@ public class TrackingEventController {
         List<TrackingEvent> events = trackingEventService.getAllEvents();
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
+    @GetMapping("/page-urls")
+    public ResponseEntity<List<String>> getPageUrls() {
+        List<String> pageUrls = trackingEventService.getPageUrls();
+        return new ResponseEntity<>(pageUrls, HttpStatus.OK);
+    }
+
 
     // Endpoint for Event Overview
     @GetMapping("/event-overview")
@@ -38,6 +45,23 @@ public class TrackingEventController {
         List<Object[]> eventOverview = trackingEventService.getEventOverview();
         return new ResponseEntity<>(eventOverview, HttpStatus.OK);
     }
+
+    @GetMapping("/events-by-page")
+    public ResponseEntity<List<PageEventDTO>> getEventsByPage(@RequestParam("url") String url) {
+        List<PageEventDTO> events = trackingEventService.getEventsByPage(url);
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+
+
+
+
+    @GetMapping("/event-statistics")
+    public ResponseEntity<List<Object[]>> getEventStatistics() {
+        List<Object[]> eventStatistics = trackingEventService.getEventStatistics();
+        return new ResponseEntity<>(eventStatistics, HttpStatus.OK);
+    }
+
 
     // Endpoint for Top Events
     @GetMapping("/top-events")

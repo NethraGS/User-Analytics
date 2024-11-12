@@ -1,12 +1,14 @@
 package com.UserAnalytics.BackendAnalytics.Controller;
 
 import com.UserAnalytics.BackendAnalytics.Service.PageViewService;
+import com.UserAnalytics.BackendAnalytics.Model.PageView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -22,15 +24,24 @@ public class PageViewController {
     }
 
     @PostMapping("/track-page-view")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void trackPageView(@RequestBody PageViewRequest pageViewRequest) {
-        pageViewService.recordPageView(
-                pageViewRequest.getUrl(),
-                pageViewRequest.getSessionId(),
-                pageViewRequest.getUserId(),
-                pageViewRequest.getUserRole()
-        );
+    public ResponseEntity<?> trackPageView(@RequestBody PageViewRequest pageViewRequest) {
+        try {
+            LocalDateTime timestamp = LocalDateTime.parse(pageViewRequest.getTimestamp());
+            pageViewService.recordPageView(
+                    pageViewRequest.getUrl(),
+                    pageViewRequest.getSessionId(),
+                    pageViewRequest.getUserId(),
+                    pageViewRequest.getUserRole(),
+                    timestamp
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid timestamp format.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
 
     @GetMapping("/total-page-views")
     public long getTotalPageViews() {
@@ -42,30 +53,26 @@ public class PageViewController {
         return pageViewService.getUniquePageViews();
     }
 
-    @GetMapping("/top-pages")
-    public List<Map.Entry<String, Long>> getTopPagesByViews() {
-        return pageViewService.getTopPagesByViews();
-    }
-
-    @GetMapping("/page-view-trends")
-    public Map<LocalDate, Long> getPageViewTrends() {
-        return pageViewService.getPageViewTrends();
-    }
-
     @GetMapping("/page-views-by-role")
     public ResponseEntity<Map<String, Long>> getPageViewsByRole() {
         try {
             Map<String, Long> pageViewsByRole = pageViewService.getPageViewsByRole();
             return ResponseEntity.ok(pageViewsByRole);
         } catch (Exception e) {
-            // Log the error and return an internal server error
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
+    @GetMapping("/page-view-trends")
+    public Map<String, Long> getPageViewTrends(@RequestParam String startDate, @RequestParam String endDate) {
+        return pageViewService.getPageViewTrends(startDate, endDate);
+    }
 
-    // DTO for the page view request payload
+    @GetMapping("/top-pages")
+    public List<Map.Entry<String, Long>> getTopPagesByViews(@RequestParam String startDate, @RequestParam String endDate) {
+        return pageViewService.getTopPagesByViews(startDate, endDate);
+    }
+
     public static class PageViewRequest {
         private String url;
         private String sessionId;
@@ -73,7 +80,6 @@ public class PageViewController {
         private String userRole;
         private String timestamp;
 
-        // Getters and setters
         public String getUrl() {
             return url;
         }

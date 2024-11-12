@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,30 +23,21 @@ public class PageViewService {
         this.pageViewRepository = pageViewRepository;
     }
 
-    public PageView recordPageView(String url, String sessionId, String userId, String userRole) {
-        // Create a new PageView object and set the details
+    public PageView recordPageView(String url, String sessionId, String userId, String userRole, LocalDateTime timestamp) {
         PageView pageView = new PageView();
         pageView.setUrl(url);
         pageView.setSessionId(sessionId);
         pageView.setUserId(userId);
         pageView.setUserRole(userRole);
-        pageView.setTimestamp(LocalDateTime.now());
+        pageView.setTimestamp(timestamp);
 
-        // Save the page view to the repository
         return pageViewRepository.save(pageView);
     }
 
-    // Method to fetch all page views
-    public List<PageView> getAllPageViews() {
-        return pageViewRepository.findAll();
-    }
-
-    // Method to get total page views
     public long getTotalPageViews() {
         return pageViewRepository.count();
     }
 
-    // Method to get unique page views by counting distinct session IDs per URL
     public Map<String, Long> getUniquePageViews() {
         List<PageView> pageViews = pageViewRepository.findAll();
         return pageViews.stream()
@@ -53,31 +46,50 @@ public class PageViewService {
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> (long) entry.getValue().size()));
     }
 
-    // Method to get top pages by views
-    public List<Map.Entry<String, Long>> getTopPagesByViews() {
+    public Map<String, Long> getPageViewsByRole() {
         List<PageView> pageViews = pageViewRepository.findAll();
         return pageViews.stream()
+                .collect(Collectors.groupingBy(PageView::getUserRole, Collectors.counting()));
+    }
+
+    public Map<String, Long> getPageViewTrends(String startDate, String endDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate start = parseDate(startDate, formatter);
+        LocalDate end = parseDate(endDate, formatter);
+
+        List<PageView> pageViews = pageViewRepository.findAll();
+        return pageViews.stream()
+                .filter(pageView -> !pageView.getTimestamp().toLocalDate().isBefore(start) && !pageView.getTimestamp().toLocalDate().isAfter(end))
+                .collect(Collectors.groupingBy(pageView -> pageView.getTimestamp().toLocalDate().toString(), Collectors.counting()));
+    }
+
+    public List<Map.Entry<String, Long>> getTopPagesByViews(String startDate, String endDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime start = parseDateTime(startDate, formatter);
+        LocalDateTime end = parseDateTime(endDate, formatter);
+
+        List<PageView> pageViews = pageViewRepository.findAll();
+        return pageViews.stream()
+                .filter(pageView -> !pageView.getTimestamp().isBefore(start) && !pageView.getTimestamp().isAfter(end))
                 .collect(Collectors.groupingBy(PageView::getUrl, Collectors.counting()))
                 .entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .collect(Collectors.toList());
     }
 
-    // Method to get page view trends by date
-    public Map<LocalDate, Long> getPageViewTrends() {
-        List<PageView> pageViews = pageViewRepository.findAll();
-        return pageViews.stream()
-                .collect(Collectors.groupingBy(pageView -> pageView.getTimestamp().toLocalDate(), Collectors.counting()));
+    private LocalDate parseDate(String date, DateTimeFormatter formatter) {
+        try {
+            return LocalDate.parse(date, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format. Expected yyyy-MM-dd.", e);
+        }
     }
 
-    // Method to get page views by user role
-    public Map<String, Long> getPageViewsByRole() {
-        // Assuming you have a repository method to get the page views from the database
-        List<PageView> pageViews = pageViewRepository.findAll();
-
-        // Group page views by user role and count occurrences
-        return pageViews.stream()
-                .collect(Collectors.groupingBy(PageView::getUserRole, Collectors.counting()));
+    private LocalDateTime parseDateTime(String dateTime, DateTimeFormatter formatter) {
+        try {
+            return LocalDateTime.parse(dateTime, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date-time format. Expected yyyy-MM-dd'T'HH:mm:ss.", e);
+        }
     }
-
 }

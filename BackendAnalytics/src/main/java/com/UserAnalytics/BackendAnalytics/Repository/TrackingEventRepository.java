@@ -22,4 +22,20 @@ public interface TrackingEventRepository extends JpaRepository<TrackingEvent, Lo
             "GROUP BY action " +
             "ORDER BY event_count DESC", nativeQuery = true)
     List<Object[]> getTopEvents();
+    @Query(value = "SELECT action AS eventName, COUNT(*) AS eventCount, " +
+            "COUNT(DISTINCT user_id) AS totalUsers, " +
+            "ROUND(COUNT(*) / NULLIF(COUNT(DISTINCT user_id), 0), 2) AS eventCountPerUser " +
+            "FROM tracking_event " +
+            "GROUP BY action", nativeQuery = true)
+    List<Object[]> getEventStatistics();
+    @Query("SELECT DISTINCT url FROM TrackingEvent")
+    List<String> getPageUrls();
+
+    @Query(value = "SELECT action, element_text, COUNT(*) AS event_count " +
+            "FROM tracking_event " +
+            "WHERE url = ?1 " +
+            "GROUP BY action, element_text", nativeQuery = true)
+    List<Object[]> getEventsByPage(String pageUrl);
+
+
 }
