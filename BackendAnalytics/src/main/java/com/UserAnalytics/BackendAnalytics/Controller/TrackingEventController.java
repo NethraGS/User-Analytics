@@ -46,11 +46,7 @@ public class TrackingEventController {
         return new ResponseEntity<>(eventOverview, HttpStatus.OK);
     }
 
-    @GetMapping("/events-by-page")
-    public ResponseEntity<List<PageEventDTO>> getEventsByPage(@RequestParam("url") String url) {
-        List<PageEventDTO> events = trackingEventService.getEventsByPage(url);
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
+
 
 
 

@@ -1,20 +1,25 @@
 package com.UserAnalytics.BackendAnalytics.Service;
 
+import com.UserAnalytics.BackendAnalytics.Dto.PageViewStatsDTO;
 import com.UserAnalytics.BackendAnalytics.Model.PageView;
 import com.UserAnalytics.BackendAnalytics.Repository.PageViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class PageViewService {
+
+
 
     private final PageViewRepository pageViewRepository;
 
@@ -53,15 +58,25 @@ public class PageViewService {
     }
 
     public Map<String, Long> getPageViewTrends(String startDate, String endDate) {
+        // Define date format
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+
+        // Parse start and end date using the provided formatter
         LocalDate start = parseDate(startDate, formatter);
         LocalDate end = parseDate(endDate, formatter);
 
+        // Retrieve all PageViews (can be optimized with a query to fetch only within the date range if needed)
         List<PageView> pageViews = pageViewRepository.findAll();
+
+        // Filter the page views based on the start and end date, and group by date
         return pageViews.stream()
-                .filter(pageView -> !pageView.getTimestamp().toLocalDate().isBefore(start) && !pageView.getTimestamp().toLocalDate().isAfter(end))
+                .filter(pageView -> {
+                    LocalDate pageViewDate = pageView.getTimestamp().toLocalDate();
+                    return !pageViewDate.isBefore(start) && !pageViewDate.isAfter(end);
+                })
                 .collect(Collectors.groupingBy(pageView -> pageView.getTimestamp().toLocalDate().toString(), Collectors.counting()));
     }
+
 
     public List<Map.Entry<String, Long>> getTopPagesByViews(String startDate, String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
@@ -91,5 +106,20 @@ public class PageViewService {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid date-time format. Expected yyyy-MM-dd'T'HH:mm:ss.", e);
         }
+    }
+    public List<PageViewStatsDTO> getPageViewStatistics() {
+        List<Object[]> result = pageViewRepository.getPageViewStatistics();
+        List<PageViewStatsDTO> pageViewStats = new ArrayList<>();
+
+        for (Object[] row : result) {
+            String pagePath = (String) row[0];
+            Long views = (Long) row[1];
+            Long users = (Long) row[2];
+            Long viewsPerUser = (Long) row[3];
+
+            pageViewStats.add(new PageViewStatsDTO(pagePath, views, users, viewsPerUser));
+        }
+
+        return pageViewStats;
     }
 }

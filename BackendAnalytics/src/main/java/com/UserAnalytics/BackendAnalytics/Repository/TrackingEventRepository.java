@@ -37,5 +37,4 @@ public interface TrackingEventRepository extends JpaRepository<TrackingEvent, Lo
             "GROUP BY action, element_text", nativeQuery = true)
     List<Object[]> getEventsByPage(String pageUrl);
 
-
 }

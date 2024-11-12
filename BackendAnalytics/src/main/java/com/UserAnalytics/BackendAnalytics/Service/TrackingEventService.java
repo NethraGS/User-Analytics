@@ -39,10 +39,6 @@ public class TrackingEventService {
     public List<Object[]> getEventStatistics() {
         return trackingEventRepository.getEventStatistics();
     }
-    public List<PageEventDTO> getEventsByPage(String pageUrl) {
-        List<Object[]> result = trackingEventRepository.getEventsByPage(pageUrl);
-        return result.stream().map(obj -> new PageEventDTO((String) obj[0], (String) obj[1], (Long) obj[2])).collect(Collectors.toList());
-    }
 
 
 

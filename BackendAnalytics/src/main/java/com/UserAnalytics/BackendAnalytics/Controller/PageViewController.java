@@ -1,5 +1,7 @@
 package com.UserAnalytics.BackendAnalytics.Controller;
 
+import com.UserAnalytics.BackendAnalytics.Dto.PageEventDTO;
+import com.UserAnalytics.BackendAnalytics.Dto.PageViewStatsDTO;
 import com.UserAnalytics.BackendAnalytics.Service.PageViewService;
 import com.UserAnalytics.BackendAnalytics.Model.PageView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class PageViewController {
         this.pageViewService = pageViewService;
     }
 
+
+
     @PostMapping("/track-page-view")
     public ResponseEntity<?> trackPageView(@RequestBody PageViewRequest pageViewRequest) {
         try {
@@ -36,11 +40,12 @@ public class PageViewController {
             );
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (DateTimeParseException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid timestamp format. Expected format: yyyy-MM-dd'T'HH:mm:ss.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid timestamp format.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     @GetMapping("/total-page-views")
     public long getTotalPageViews() {
@@ -63,27 +68,20 @@ public class PageViewController {
     }
 
     @GetMapping("/page-view-trends")
-    public ResponseEntity<?> getPageViewTrends(@RequestParam String startDate, @RequestParam String endDate) {
-        try {
-            Map<String, Long> trends = pageViewService.getPageViewTrends(startDate, endDate);
-            return ResponseEntity.ok(trends);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public Map<String, Long> getPageViewTrends(@RequestParam String startDate, @RequestParam String endDate) {
+        return pageViewService.getPageViewTrends(startDate, endDate);
     }
 
+
     @GetMapping("/top-pages")
-    public ResponseEntity<?> getTopPagesByViews(@RequestParam String startDate, @RequestParam String endDate) {
-        try {
-            List<Map.Entry<String, Long>> topPages = pageViewService.getTopPagesByViews(startDate, endDate);
-            return ResponseEntity.ok(topPages);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public List<Map.Entry<String, Long>> getTopPagesByViews(@RequestParam String startDate, @RequestParam String endDate) {
+        return pageViewService.getTopPagesByViews(startDate, endDate);
+    }
+
+    @GetMapping("/pageview/stats")
+    public List<PageViewStatsDTO> getPageViewStatistics() {
+        System.out.println("pageview-stats PageViewController.getPageViewStatistics");
+        return pageViewService.getPageViewStatistics();
     }
 
     public static class PageViewRequest {
@@ -93,7 +91,6 @@ public class PageViewController {
         private String userRole;
         private String timestamp;
 
-        // Getters and Setters
         public String getUrl() {
             return url;
         }
