@@ -31,10 +31,11 @@ public class TrackingEventService {
         return trackingEventRepository.getEventOverview();
     }
 
-    // Method to get Top Events
     public List<Object[]> getTopEvents() {
+        // Fetch all the top events with their corresponding action, URL, and event count
         return trackingEventRepository.getTopEvents();
     }
+
 
     public List<Object[]> getEventStatistics() {
         return trackingEventRepository.getEventStatistics();

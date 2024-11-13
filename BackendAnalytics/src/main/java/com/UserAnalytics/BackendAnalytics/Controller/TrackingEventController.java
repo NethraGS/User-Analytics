@@ -59,10 +59,11 @@ public class TrackingEventController {
     }
 
 
-    // Endpoint for Top Events
     @GetMapping("/top-events")
     public ResponseEntity<List<Object[]>> getTopEvents() {
+        // Retrieve top events with action, URL, and event count
         List<Object[]> topEvents = trackingEventService.getTopEvents();
         return new ResponseEntity<>(topEvents, HttpStatus.OK);
     }
+
 }

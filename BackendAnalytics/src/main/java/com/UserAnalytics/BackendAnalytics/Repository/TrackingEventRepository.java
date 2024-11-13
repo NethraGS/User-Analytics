@@ -16,12 +16,13 @@ public interface TrackingEventRepository extends JpaRepository<TrackingEvent, Lo
             "GROUP BY action, element_id, element_type", nativeQuery = true)
     List<Object[]> getEventOverview();
 
-    // Custom SQL query for Top Events: Grouping by action
-    @Query(value = "SELECT action, COUNT(*) AS event_count " +
+    @Query(value = "SELECT action, url, COUNT(*) AS event_count " +
             "FROM tracking_event " +
-            "GROUP BY action " +
+            "GROUP BY action, url " +
             "ORDER BY event_count DESC", nativeQuery = true)
     List<Object[]> getTopEvents();
+
+
     @Query(value = "SELECT action AS eventName, COUNT(*) AS eventCount, " +
             "COUNT(DISTINCT user_id) AS totalUsers, " +
             "ROUND(COUNT(*) / NULLIF(COUNT(DISTINCT user_id), 0), 2) AS eventCountPerUser " +
