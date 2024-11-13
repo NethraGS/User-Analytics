@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -130,8 +132,14 @@ public class PageViewService {
             Long views = (Long) row[1];
             Long users = (Long) row[2];
             Long viewsPerUser = (Long) row[3];
+            Long totalTimeSpentMinutes = new BigDecimal(String.valueOf(row[4]))  // Assuming row[4] contains the BigDecimal value as String
+                    .setScale(2, RoundingMode.DOWN)  // Truncate to 2 decimal places
+                    .divide(new BigDecimal(6000), RoundingMode.DOWN)  // Divide by 6000
+                    .longValue();  // Convert to Long
 
-            pageViewStats.add(new PageViewStatsDTO(pagePath, views, users, viewsPerUser));
+
+
+            pageViewStats.add(new PageViewStatsDTO(pagePath, views, users, viewsPerUser,totalTimeSpentMinutes));
         }
 
         return pageViewStats;

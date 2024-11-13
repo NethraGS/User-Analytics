@@ -9,12 +9,14 @@ public class PageViewStatsDTO {
     private Long views;
     private Long users;
     private Long viewsPerUser;
+    private Long totalTimeSpentMinutes;
 
-    public PageViewStatsDTO(String pagePath, Long views, Long users, Long viewsPerUser) {
+    public PageViewStatsDTO(String pagePath, Long views, Long users, Long viewsPerUser, Long totalTimeSpentMinutes) {
         this.pagePath = pagePath;
         this.views = views;
         this.users = users;
         this.viewsPerUser = viewsPerUser;
+        this.totalTimeSpentMinutes = totalTimeSpentMinutes;
     }
 }
 
