@@ -24,7 +24,7 @@ public class TimeOnPageController {
 
     @PostMapping("/time-on-page")
     public ResponseEntity<TimeOnPage> saveTimeOnPage(@RequestBody TimeOnPage timeOnPage) {
-        timeOnPage.setTimestamp(Instant.now()); // Setting current timestamp if not provided
+        timeOnPage.setTimestamp(Instant.now());
         TimeOnPage savedRecord = timeOnPageService.saveTimeOnPage(timeOnPage);
         return new ResponseEntity<>(savedRecord, HttpStatus.CREATED);
     }

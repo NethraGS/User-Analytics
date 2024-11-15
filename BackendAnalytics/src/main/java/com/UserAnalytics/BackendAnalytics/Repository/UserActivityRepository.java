@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserActivityRepository extends JpaRepository<UserActivity, Long> {
-    // Custom query methods can be added here
+
 }

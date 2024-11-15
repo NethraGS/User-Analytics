@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 
 @Repository
-public interface SessionRepository extends JpaRepository<Session, Long> {  // Use Long as the ID type
+public interface SessionRepository extends JpaRepository<Session, Long> {
 
     @Query("SELECT COUNT(s) FROM Session s WHERE s.sessionStartTime BETWEEN :startDate AND :endDate")
     long countSessions(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);

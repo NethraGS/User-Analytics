@@ -37,9 +37,9 @@ public class DimmingScheduleController {
     public ResponseEntity<DimmingSchedule> updateSchedule(@PathVariable Long id, @RequestBody DimmingSchedule schedule) {
         DimmingSchedule updatedSchedule = service.updateSchedule(id, schedule);
         if (updatedSchedule != null) {
-            return ResponseEntity.ok(updatedSchedule); // Return the updated schedule
+            return ResponseEntity.ok(updatedSchedule);
         } else {
-            return ResponseEntity.notFound().build(); // If schedule is not found, return 404
+            return ResponseEntity.notFound().build();
         }
     }
 }

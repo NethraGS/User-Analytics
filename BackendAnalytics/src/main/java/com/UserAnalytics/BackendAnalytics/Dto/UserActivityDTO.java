@@ -6,13 +6,13 @@ import java.time.Instant;
 
 @Data
 public class UserActivityDTO {
-    private String username; // Include username or user identifier
+    private String username;
     private String sessionId;
-    private String type; // e.g., page_visit, click, etc.
-    private String page; // Current page
-    private String target; // Element interacted with
-    private String key; // Key pressed (if applicable)
-    private Long timeOnPage; // Time spent on the page in milliseconds
-    private Instant timestamp; // Timestamp of the activity
+    private String type;
+    private String page;
+    private String target;
+    private String key;
+    private Long timeOnPage;
+    private Instant timestamp;
 }
 

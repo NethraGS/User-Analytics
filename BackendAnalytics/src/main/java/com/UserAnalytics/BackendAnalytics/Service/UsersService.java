@@ -15,7 +15,7 @@ public class UsersService {
     @Autowired
     private UsersRepository usersRepository;
 
-    private ConcurrentHashMap<String, Long> activeSessions = new ConcurrentHashMap<>(); // Stores sessionId -> userId
+    private ConcurrentHashMap<String, Long> activeSessions = new ConcurrentHashMap<>();
 
     public void registerUser(Users user) {
         System.out.println("Registering user: " + user);
@@ -42,12 +42,12 @@ public class UsersService {
         return usersRepository.findByEmail(email);
     }
 
-    // Optionally store session IDs on the server
+
     public void storeSession(String sessionId, Long userId) {
         activeSessions.put(sessionId, userId);
     }
 
-    // Optionally remove a session when the user logs out
+
     public void removeSession(String sessionId) {
         activeSessions.remove(sessionId);
     }

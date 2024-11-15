@@ -22,6 +22,6 @@ public class UserJourney {
     private String previousPage;
     private String currentPage;
 
-    // Changed to LocalDateTime for correct timestamp type handling
+
     private LocalDateTime timestamp;
 }

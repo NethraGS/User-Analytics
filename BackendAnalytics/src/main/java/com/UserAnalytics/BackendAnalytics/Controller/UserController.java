@@ -20,7 +20,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Create a new user
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User createdUser = userService.createUser(user);
@@ -35,7 +34,6 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Update an existing user
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         try {
@@ -46,7 +44,6 @@ public class UserController {
         }
     }
 
-    // Delete a user by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

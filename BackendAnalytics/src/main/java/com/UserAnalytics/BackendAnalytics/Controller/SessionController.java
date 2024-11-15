@@ -13,7 +13,7 @@ public class SessionController {
     @Autowired
     private SessionService sessionService;
 
-    // Endpoint to store session data
+
     @PostMapping("/store")
     public Session storeSession(@RequestBody SessionRequest sessionRequest) {
         return sessionService.storeSessionDetails(sessionRequest);

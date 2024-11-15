@@ -39,16 +39,11 @@ public class TrackingEventController {
     }
 
 
-    // Endpoint for Event Overview
     @GetMapping("/event-overview")
     public ResponseEntity<List<Object[]>> getEventOverview() {
         List<Object[]> eventOverview = trackingEventService.getEventOverview();
         return new ResponseEntity<>(eventOverview, HttpStatus.OK);
     }
-
-
-
-
 
 
 
@@ -61,7 +56,6 @@ public class TrackingEventController {
 
     @GetMapping("/top-events")
     public ResponseEntity<List<Object[]>> getTopEvents() {
-        // Retrieve top events with action, URL, and event count
         List<Object[]> topEvents = trackingEventService.getTopEvents();
         return new ResponseEntity<>(topEvents, HttpStatus.OK);
     }

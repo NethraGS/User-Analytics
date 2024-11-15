@@ -26,13 +26,13 @@ public class TrackingEventService {
         return trackingEventRepository.getPageUrls();
     }
 
-    // Method to get Event Overview
+
     public List<Object[]> getEventOverview() {
         return trackingEventRepository.getEventOverview();
     }
 
     public List<Object[]> getTopEvents() {
-        // Fetch all the top events with their corresponding action, URL, and event count
+
         return trackingEventRepository.getTopEvents();
     }
 

@@ -18,7 +18,6 @@ public class AnalyticsController {
     @Autowired
     private AnalyticsService analyticsService;
 
-    // Endpoint to get total number of sessions
     @GetMapping("/sessions/total")
     public ResponseEntity<Long> getTotalSessions(@RequestParam("startDate") LocalDateTime startDate,
                                                  @RequestParam("endDate") LocalDateTime endDate) {
@@ -36,7 +35,6 @@ public class AnalyticsController {
             }
             return ResponseEntity.ok(avgDuration);
         } catch (Exception e) {
-            // Log the error and return a meaningful message
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }

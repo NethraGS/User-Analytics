@@ -26,19 +26,19 @@ public class DimmingScheduleService {
         repository.deleteById(id);
     }
 
-    // Added updateSchedule method
+
     public DimmingSchedule updateSchedule(Long id, DimmingSchedule schedule) {
         Optional<DimmingSchedule> existingSchedule = repository.findById(id);
         if (existingSchedule.isPresent()) {
             DimmingSchedule scheduleToUpdate = existingSchedule.get();
-            // Update fields based on incoming schedule
+
             scheduleToUpdate.setStartDate(schedule.getStartDate());
             scheduleToUpdate.setEndDate(schedule.getEndDate());
             scheduleToUpdate.setFrequency(schedule.getFrequency());
-            // Save and return the updated schedule
+
             return repository.save(scheduleToUpdate);
         } else {
-            return null; // Return null if the schedule is not found
+            return null;
         }
     }
 }

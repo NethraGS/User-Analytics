@@ -25,28 +25,24 @@ public class UsersController {
             Optional<Users> foundUser = userService.loginUser(user);
 
             if (foundUser.isPresent()) {
-                Users loggedInUser = foundUser.get();  // Retrieve the found user object
+                Users loggedInUser = foundUser.get();
                 String role = loggedInUser.getRole().name();
                 Long userId = loggedInUser.getId();
 
                 // Generate a session ID and set it in a cookie
                 String sessionId = UUID.randomUUID().toString();
                 Cookie sessionCookie = new Cookie("sessionId", sessionId);
-                sessionCookie.setHttpOnly(true);  // Prevent client-side JavaScript access
-                sessionCookie.setSecure(true);    // Send only over HTTPS
-                sessionCookie.setPath("/");      // Cookie accessible across the entire domain
-                sessionCookie.setMaxAge(3600);   // Cookie expiry time (1 hour)
+                sessionCookie.setHttpOnly(true);
+                sessionCookie.setSecure(true);
+                sessionCookie.setPath("/");
+                sessionCookie.setMaxAge(3600);
 
-                // Add session cookie to the response
                 response.addCookie(sessionCookie);
-
-                // Optionally, store the session ID on the server (e.g., in a database or cache)
-                // userService.storeSession(sessionId, loggedInUser);
 
                 return ResponseEntity.ok().body(Map.of(
                         "message", "Login successful",
                         "role", role,
-                        "userId", userId  // Include userId in the response
+                        "userId", userId
                 ));
             } else {
                 return ResponseEntity.status(401).body(Map.of("error", "Invalid username or password"));
@@ -59,11 +55,11 @@ public class UsersController {
     @PostMapping("/logout")
     public ResponseEntity<Map<String, String>> logout(HttpServletResponse response) {
         try {
-            // Invalidate the session by removing the session cookie
+
             Cookie sessionCookie = new Cookie("sessionId", null);
-            sessionCookie.setMaxAge(0); // Expire immediately
-            sessionCookie.setPath("/");  // Path to which the cookie applies
-            response.addCookie(sessionCookie); // Send expired cookie to the client
+            sessionCookie.setMaxAge(0);
+            sessionCookie.setPath("/");
+            response.addCookie(sessionCookie);
 
             return ResponseEntity.ok(Map.of("message", "Logout successful"));
         } catch (Exception e) {
@@ -85,7 +81,7 @@ public class UsersController {
             return ResponseEntity.badRequest().body(Map.of("error", "Username already in use"));
         }
 
-        user.setRole(Users.Role.USER);  // Default role to USER during signup
+        user.setRole(Users.Role.USER);
         userService.registerUser(user);
         return ResponseEntity.ok(Map.of("message", "User registered successfully"));
     }

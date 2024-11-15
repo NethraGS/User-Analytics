@@ -60,17 +60,15 @@ public class PageViewService {
                 .collect(Collectors.groupingBy(PageView::getUserRole, Collectors.counting()));
     }
     public List<PageViewTrendsDTO> getPageViewTrends(String startDate, String endDate) {
-        // Define date format
+
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
 
-        // Parse start and end date
         LocalDate start = LocalDate.parse(startDate, formatter);
         LocalDate end = LocalDate.parse(endDate, formatter);
 
-        // Retrieve all PageViews within the specified date range
         List<PageView> pageViews = pageViewRepository.findAll();
 
-        // Filter and group the page views by URL and date, then map to PageViewTrendsDTO
+
         Map<String, Long> groupedData = pageViews.stream()
                 .filter(pageView -> {
                     LocalDate pageViewDate = pageView.getTimestamp().toLocalDate();
@@ -81,7 +79,7 @@ public class PageViewService {
                         Collectors.counting()
                 ));
 
-        // Convert grouped data to List<PageViewTrendsDTO>
+
         return groupedData.entrySet().stream()
                 .map(entry -> {
                     String[] keyParts = entry.getKey().split("\\|");
@@ -132,10 +130,10 @@ public class PageViewService {
             Long views = (Long) row[1];
             Long users = (Long) row[2];
             Long viewsPerUser = (Long) row[3];
-            Long totalTimeSpentMinutes = new BigDecimal(String.valueOf(row[4]))  // Assuming row[4] contains the BigDecimal value as String
-                    .setScale(2, RoundingMode.DOWN)  // Truncate to 2 decimal places
-                    .divide(new BigDecimal(6000), RoundingMode.DOWN)  // Divide by 6000
-                    .longValue();  // Convert to Long
+            Long totalTimeSpentMinutes = new BigDecimal(String.valueOf(row[4]))
+                    .setScale(2, RoundingMode.DOWN)
+                    .divide(new BigDecimal(6000), RoundingMode.DOWN)
+                    .longValue();
 
 
 

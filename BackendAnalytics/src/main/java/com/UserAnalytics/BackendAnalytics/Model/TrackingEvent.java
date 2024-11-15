@@ -22,7 +22,7 @@ public class TrackingEvent {
     private String url;
     private String userId;
     private String userRole;
-    private String depth; // For scroll depth events, if applicable
+    private String depth;
     private LocalDateTime timestamp;
 
     @PrePersist
